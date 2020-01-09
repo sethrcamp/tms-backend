@@ -10,15 +10,24 @@ use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\Psr7\Request;
 
-$displayErrorDetails = true;
-ini_set('display_errors', 1);
+require_once __DIR__ . "/../config/config.php";
+
+ini_set('display_errors', DISPLAY_ERRORS ? 1 : 0);
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . "/../config/config.php";
 require_once __DIR__ . '/../config/error-handlers/HttpErrorHandler.php';
 require_once __DIR__ . '/../config/error-handlers/ShutdownHandler.php';
-require_once __DIR__ . '/../config/JsonBodyParserMiddleware.php';
-require_once __DIR__ . '/../config/JsonResponseMiddleware.php';
+require_once __DIR__.'/../config/middleware/JsonBodyParserMiddleware.php';
+require_once __DIR__.'/../config/middleware/JsonResponseMiddleware.php';
+require_once __DIR__.'/../config/Database.php';
+
+
+$files = scandir(__DIR__ . '/../config/error-handlers/custom-exceptions/');
+foreach ($files as $file) {
+	if (!is_dir($file)) {
+		require_once __DIR__ . "/../config/error-handlers/custom-exceptions/$file";
+	}
+}
 
 $app = AppFactory::create();
 $callableResolver = $app->getCallableResolver();
@@ -27,25 +36,17 @@ $responseFactory = $app->getResponseFactory();
 $pathToPublic = "/" . basename(dirname(__DIR__, 1)) . "/public";
 $app->setBasePath($pathToPublic);
 
-
 $app->add(JsonBodyParserMiddleware::class);
-
-
-
-
 
 $serverRequestCreator = ServerRequestCreatorFactory::create();
 $request = $serverRequestCreator->createServerRequestFromGlobals();
 
 $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
-$shutdownHandler = new ShutdownHandler($request, $errorHandler, $displayErrorDetails);
+$shutdownHandler = new ShutdownHandler($request, $errorHandler, DISPLAY_ERRORS);
 register_shutdown_function($shutdownHandler);
 
-$errorMiddleware = $app->addErrorMiddleware(true, false, false);
+$errorMiddleware = $app->addErrorMiddleware(DISPLAY_ERRORS, false, false);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
-
-
-
 
 $directoriesToIncludeInSrc = [
     "views",
@@ -61,7 +62,6 @@ foreach ($directoriesToIncludeInSrc as $directory) {
         }
     }
 }
-
 
 $app->options('/{routes:.+}', function ($request, $response, $args) {
     return $response;

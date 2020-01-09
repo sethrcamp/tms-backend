@@ -52,11 +52,7 @@ class HttpErrorHandler extends ErrorHandler
             } elseif ($exception instanceof HttpNotImplementedException) {
                 $type = self::NOT_IMPLEMENTED;
             }
-        }
-
-        if (!($exception instanceof HttpException) && ($exception instanceof Exception || $exception instanceof Throwable)
-            && $this->displayErrorDetails
-        ) {
+        } else if ($exception instanceof Exception || $exception instanceof Throwable) {
             $description = $exception->getMessage();
             if (is_integer($exception->getCode()) && $exception->getCode() >= 100 && $exception->getCode() <= 599) {
                 $statusCode = $exception->getCode();
@@ -64,18 +60,22 @@ class HttpErrorHandler extends ErrorHandler
             $stackTrace = $exception->getTrace();
             $line = $exception->getLine();
             $file = $exception->getFile();
+            $type = get_class($exception);
         }
 
         $error = [
             'statusCode' => $statusCode,
             'error' => [
                 'type' => $type,
-                'description' => $description,
-                'stackTrace' => $stackTrace,
-                'line' => $line,
-                'file' => $file,
+                'description' => $description
             ],
         ];
+
+        if($this->displayErrorDetails) {
+        	$error['error']['stackTrace'] = $stackTrace;
+        	$error['error']['line'] = $line;
+        	$error['error']['file'] = $file;
+		}
 
         $payload = json_encode($error);
 

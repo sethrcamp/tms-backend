@@ -4,8 +4,11 @@
 use Slim\Psr7\Response;
 
 class Helper {
-	public static function withJson(Response $response, Array $data) : Response {
-		$response->getBody()->write(json_encode($data));
-		return $response->withHeader('Content-Type', 'application/json');
+	public static function checkForAllParameters($body, $requiredParams) {
+		foreach ($requiredParams as $param) {
+			if (!isset($body[$param])) {
+				throw new MissingRequiredParameterException($param);
+			}
+		}
 	}
 }
