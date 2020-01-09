@@ -94,6 +94,10 @@ class User {
 		return $result;
 	}
 
+	public function getParent() {
+		return User::getById($this->parent_id);
+	}
+
 	public static function create($data) {
 		$sql = "
             INSERT INTO users (
