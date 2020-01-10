@@ -94,7 +94,7 @@ class User {
 		return $result;
 	}
 
-	public function getParent() {
+	public function getParent() { //for the future
 		return User::getById($this->parent_id);
 	}
 
