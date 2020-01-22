@@ -94,11 +94,11 @@ class User {
 		return $result;
 	}
 
-	public function getParent() { //for the future
+	public function getParent() : User { //for the future
 		return User::getById($this->parent_id);
 	}
 
-	public static function create($data) {
+	public static function create($data) : User {
 		$sql = "
             INSERT INTO users (
 				parent_id,
@@ -130,7 +130,7 @@ class User {
 		return User::getById($db->lastInsertId());
 	}
 
-	public function update($data) {
+	public function update($data) : User {
 
 		$sql = "
             UPDATE users
@@ -174,7 +174,7 @@ class User {
 		return $result;
 	}
 
-	public function delete() {
+	public function delete() : void {
 		$sql = "DELETE FROM users WHERE id = ?";
 
 		$db = Database::getInstance();
