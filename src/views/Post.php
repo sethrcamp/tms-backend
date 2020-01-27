@@ -11,8 +11,6 @@ $app->group('/posts', function(RouteCollectorProxy $group){
 
 	$group->post('', PostController::class.":create");
 
-	$group->put('/{id}', PostController::class.":update");
-
 	$group->delete('/{id}', PostController::class.":delete");
 
 });

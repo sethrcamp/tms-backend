@@ -2,7 +2,6 @@
 
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-use phpDocumentor\Reflection\Types\TMSResource_ as NotTMSResource;
 
 class TMSResourceController {
 
@@ -68,7 +67,6 @@ class TMSResourceController {
 		];
 
 		Helper::checkForAllParameters($body, $required_parameters);
-
 
 		if(!TMSResourceType::isValidName($body['type'])) {
 			throw new IncorrectTypeException($body['type'], 'TMSResourceType');

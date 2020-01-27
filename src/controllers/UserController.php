@@ -20,7 +20,7 @@ class UserController {
 		$user = User::getById($args['id']);
 
 		if($user === null) {
-			throw new ItemNotFoundException("item", "id: ".$args['id']);
+			throw new ItemNotFoundException("post", "id: ".$args['id']);
 		}
 
 		$result = [
@@ -164,8 +164,6 @@ class UserController {
 
 	public static function delete(Request $request, Response $response, array $args) {
 		$user = User::getById($args['id']);
-
-
 
 		if (!$user) {
 			throw new ItemNotFoundException("user", "id: ".$args['id']);
