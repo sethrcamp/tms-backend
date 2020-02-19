@@ -19,8 +19,8 @@ class UserController {
 	public static function getById(Request $request, Response $response, array $args) {
 		$user = User::getById($args['id']);
 
-		if($user === null) {
-			throw new ItemNotFoundException("post", "id: ".$args['id']);
+		if(!$user) {
+			throw new ItemNotFoundException("user", "id: ".$args['id']);
 		}
 
 		$result = [
@@ -109,6 +109,74 @@ class UserController {
 
 		$result = [
 			"user" => $user
+		];
+
+		$response = new JsonResponse($response);
+		return $response->withJson($result);
+	}
+
+	public static function login(Request $request, Response $response, array $args) {
+		$body = $request->getParsedBody();
+
+		Helper::checkForAllParameters($body, ['email', 'password']);
+
+		$user = User::getByEmail($body['email']);
+
+		if(!$user) {
+			throw new InvalidCredentialsException();
+		}
+
+		$user->verifyPassword($body['password']);
+
+		$current_session = $user->getCurrentSession();
+
+		if(!$current_session || $current_session->hasExpired()) {
+			$current_session = Session::create($user);
+		} else {
+			$current_session = $current_session->extend();
+		}
+
+		$result = [
+			"session" => $current_session
+		];
+
+		$response = Helper::addSessionHeaders($response, $current_session);
+
+		$response = new JsonResponse($response);
+
+		if(isset($body['redirect_url'])) {
+			return $response->withHeader('Location', $body['redirect_url']);
+		}
+
+		return $response->withJson($result);
+	}
+
+	public static function logout(Request $request, Response $response, array $args) {
+		$user = User::getById($args['id']);
+
+		if(!$user) {
+			throw new ItemNotFoundException("post", "id: ".$args['id']);
+		}
+
+		$current_session = $user->getCurrentSession();
+		$canceled_session = $current_session->cancel();
+
+		$result = [
+			"session" => $canceled_session
+		];
+
+		$response = new JsonResponse($response);
+		return $response->withJson($result);
+	}
+
+	public static function logoutCurrent(Request $request, Response $response, array $args) {
+		$user = $request->getAttribute("current_user");
+
+		$current_session = $user->getCurrentSession();
+		$canceled_session = $current_session->cancel();
+
+		$result = [
+			"session" => $canceled_session
 		];
 
 		$response = new JsonResponse($response);

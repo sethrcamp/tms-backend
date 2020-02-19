@@ -182,4 +182,14 @@ class User {
 		$query->execute([$this->id]);
 		$query->closeCursor();
 	}
+
+	public function verifyPassword(string $password) : void {
+		if(!password_verify($password, $this->password)) {
+			throw new InvalidCredentialsException();
+		}
+	}
+
+	public function getCurrentSession() : Session {
+		return Session::getCurrentSessionByUser($this);
+	}
 }

@@ -31,7 +31,13 @@ class TMSResourceController {
 	}
 
 	public static function getAllByUserId(Request $request, Response $response, array $args) {
-		$resources = TMSResource::getAllByUserId($args['user_id']);
+		$user = User::getById($args['user_id']);
+
+		if(!$user) {
+			throw new ItemNotFoundException("user", "id: ".$args['user_id']);
+		}
+
+		$resources = TMSResource::getAllByUser($user);
 
 		$result = [
 			"resources" => $resources

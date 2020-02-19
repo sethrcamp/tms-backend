@@ -11,6 +11,9 @@ $app->group('/users', function(RouteCollectorProxy $group){
 
 	$group->post('', UserController::class.":create");
 
+	$group->put('/login', UserController::class.":login");
+	$group->put('/logout', UserController::class.":logoutCurrent")->add(new Validator());
+	$group->put('/logout/{id}', UserController::class.":logout");
 	$group->put('/{id}', UserController::class.":update");
 
 	$group->delete('/{id}', UserController::class.":delete");

@@ -42,12 +42,12 @@ class TMSResource {
 		return $result[0];
 	}
 
-	public static function getAllByUserId(int $user_id) : array {
+	public static function getAllByUser(User $user) : array {
 		$sql = "SELECT * FROM resources WHERE user_id = ?";
 
 		$db = Database::getInstance();
 		$query = $db->prepare($sql);
-		$query->execute([$user_id]);
+		$query->execute([$user->id]);
 		$result = $query->fetchAll(PDO::FETCH_CLASS, 'TMSResource');
 		$query->closeCursor();
 
