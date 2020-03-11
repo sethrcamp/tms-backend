@@ -19,6 +19,7 @@ require_once __DIR__ . '/../config/error-handlers/HttpErrorHandler.php';
 require_once __DIR__ . '/../config/error-handlers/ShutdownHandler.php';
 require_once __DIR__.'/../config/middleware/JsonBodyParserMiddleware.php';
 require_once __DIR__.'/../config/middleware/JsonResponseMiddleware.php';
+require_once __DIR__.'/../config/middleware/middleware.php';
 require_once __DIR__.'/../config/Database.php';
 
 
@@ -52,7 +53,7 @@ $directoriesToIncludeInSrc = [
     "views",
     "controllers",
     "models",
-	"helper"
+    "helper"
 ];
 foreach ($directoriesToIncludeInSrc as $directory) {
     $files = scandir("../src/$directory");

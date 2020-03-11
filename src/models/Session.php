@@ -61,7 +61,7 @@ class Session {
 		return $result[0];
 	}
 
-	public static function getCurrentSessionByUser(User $user) : Session {
+	public static function getCurrentSessionByUser(User $user) : ?Session {
 		$sql = "SELECT * FROM sessions WHERE user_id = ? ORDER BY created_time DESC LIMIT 1";
 
 		$db = Database::getInstance();
@@ -122,7 +122,7 @@ class Session {
 		$session_created_time = new DateTime($this->created_time);
 		$max_extension_time = $session_created_time->add(new DateInterval("PT".MAX_SESSION_EXTENSION_LENGTH_IN_MINUTES."M"));
 
-		return ($last_login_time > $session_expiration_time) || ($now > $max_extension_time) || $this->is_canceled;
+		return ($last_login_time < $session_expiration_time) || ($now > $max_extension_time) || $this->is_canceled;
 	}
 
 	public function getUser() {
