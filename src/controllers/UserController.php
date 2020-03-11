@@ -165,6 +165,8 @@ class UserController {
 	public static function delete(Request $request, Response $response, array $args) {
 		$user = User::getById($args['id']);
 
+
+
 		if (!$user) {
 			throw new ItemNotFoundException("user", "id: ".$args['id']);
 		}
