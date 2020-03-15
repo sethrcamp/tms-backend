@@ -98,7 +98,7 @@ class User {
 		return User::getById($this->parent_id);
 	}
 
-	public static function create($data) : User {
+	public static function create(array $data) : User {
 		$sql = "
             INSERT INTO users (
 				parent_id,
@@ -130,7 +130,7 @@ class User {
 		return User::getById($db->lastInsertId());
 	}
 
-	public function update($data) : User {
+	public function update(array $data) : User {
 
 		$sql = "
             UPDATE users
