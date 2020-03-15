@@ -136,10 +136,6 @@ class UserController {
 			$current_session = $current_session->extend();
 		}
 
-		$result = [
-			"session" => $current_session
-		];
-
 		$response = Helper::addSessionHeaders($response, $current_session);
 
 		$response = new JsonResponse($response);
@@ -148,7 +144,7 @@ class UserController {
 			return $response->withHeader('Location', $body['redirect_url']);
 		}
 
-		return $response->withJson($result);
+		return $response->withJson(["user" => $user]);
 	}
 
 	public static function logout(Request $request, Response $response, array $args) {

@@ -189,7 +189,7 @@ class User {
 		}
 	}
 
-	public function getCurrentSession() : Session {
+	public function getCurrentSession() : ?Session {
 		return Session::getCurrentSessionByUser($this);
 	}
 }
