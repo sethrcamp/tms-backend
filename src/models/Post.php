@@ -48,12 +48,12 @@ class Post {
 		return $result;
 	}
 
-	public static function getAllWithinRange(string $start_time, string $end_time) : array {
+	public static function getAllWithinRange(DateTime $start_time, DateTime $end_time) : array {
 		$sql = "SELECT * FROM posts WHERE posted_time BETWEEN ? AND ? ORDER BY posted_time";
 
 		$db = Database::getInstance();
 		$query = $db->prepare($sql);
-		$query->execute([$start_time, $end_time]);
+		$query->execute([$start_time->format(DB_DATETIME_FORMAT), $end_time->format(DB_DATETIME_FORMAT)]);
 		$result = $query->fetchAll(PDO::FETCH_CLASS, 'Post');
 		$query->closeCursor();
 
@@ -72,7 +72,7 @@ class Post {
 		$args = [
 			$data['author_id'],
 			$data['title'],
-			$data['posted_time'],
+			$data['posted_time']->format(DB_DATETIME_FORMAT),
 			$data['content']
 		];
 

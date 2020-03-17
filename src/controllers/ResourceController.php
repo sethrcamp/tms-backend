@@ -86,7 +86,6 @@ class TMSResourceController {
 			}
 		}
 
-
 		$resource = TMSResource::create($body);
 
 		$result = [

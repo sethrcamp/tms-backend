@@ -52,14 +52,20 @@ class PostController {
 		$start_time = urldecode($args['start_time']);
 		$end_time = urldecode($args['end_time']);
 
-		$parsed_start_time = strtotime($start_time);
-		if(!$parsed_start_time) {
-			throw new IncorrectTypeException($start_time, 'time');
+		try {
+			$start_time = new DateTime($start_time);
+		} catch (Exception $e) {
+			if($e->getCode() === 0) {
+				throw new IncorrectTypeException($start_time, 'DateTime format');
+			}
 		}
 
-		$parsed_end_time = strtotime($end_time);
-		if(!$parsed_end_time) {
-			throw new IncorrectTypeException($end_time, 'time');
+		try {
+			$end_time = new DateTime($end_time);
+		} catch (Exception $e) {
+			if($e->getCode() === 0) {
+				throw new IncorrectTypeException($end_time, 'DateTime format');
+			}
 		}
 
 		$posts = Post::getAllWithinRange($start_time, $end_time);
@@ -91,11 +97,17 @@ class PostController {
 			throw new ItemNotFoundException("user", "id: ".$body['author_id']);
 		}
 
-		$parsed_posted_time = strtotime($body['posted_time']);
+		$posted_time = $body['posted_time'];
 
-		if(!$parsed_posted_time) {
-			throw new IncorrectTypeException($body['posted_time'], 'time');
+		try {
+			$posted_time = new DateTime($posted_time);
+		} catch (Exception $e) {
+			if($e->getCode() === 0) {
+				throw new IncorrectTypeException($posted_time, 'DateTime format');
+			}
 		}
+
+		$body['posted_time'] = $posted_time;
 
 		$post = Post::create($body);
 

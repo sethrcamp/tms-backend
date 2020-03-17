@@ -22,4 +22,17 @@ class Helper {
 		$response = $response->withAddedHeader("Set-Cookie", "session_id=".$session->id."; Expires=".$expiration_date."; Path=/; SameSite=Strict; httpOnly");
 		return $response;
 	}
+
+	public static function getDateObject(string $date) : DateTime {
+		try {
+			$date = new DateTime($date);
+			$date = new DateTime($date->format(DB_DATE_FORMAT));
+		} catch (Exception $e) {
+			if($e->getCode() === 0) {
+				throw new IncorrectTypeException($body['start_date'], "DateTime format");
+			}
+		} finally {
+			return $date;
+		}
+	}
 }
