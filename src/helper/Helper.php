@@ -24,15 +24,29 @@ class Helper {
 	}
 
 	public static function getDateObject(string $date) : DateTime {
+		return Helper::getFormattedDateTimeObject($date, DB_DATE_FORMAT);
+	}
+
+	public static function getTimeObject(string $time) : DateTime {
+		return Helper::getFormattedDateTimeObject($time, DB_TIME_FORMAT);
+	}
+
+	public static function getDateTimeObject(string $date_time) : DateTime {
+		return Helper::getFormattedDateTimeObject($date_time, DB_DATETIME_FORMAT);
+	}
+
+	private static function getFormattedDateTimeObject(string $date_time, string $DB_FORMAT) : DateTime {
 		try {
-			$date = new DateTime($date);
-			$date = new DateTime($date->format(DB_DATE_FORMAT));
+			$date_time_formatted = new DateTime($date_time);
+			$date_time_formatted = new DateTime($date_time_formatted->format($DB_FORMAT));
 		} catch (Exception $e) {
 			if($e->getCode() === 0) {
-				throw new IncorrectTypeException($body['start_date'], "DateTime format");
+				throw new IncorrectTypeException($date_time, "DateTime format");
 			}
-		} finally {
-			return $date;
 		}
+
+		return $date_time_formatted;
 	}
+	
+	
 }

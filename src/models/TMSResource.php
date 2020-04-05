@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__."/../helper/Enum.php";
-
 abstract class TMSResourceType extends Enum {
 	const URL = "URL";
 	const FILE = "FILE";

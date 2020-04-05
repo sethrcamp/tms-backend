@@ -51,22 +51,9 @@ class PostController {
 
 		$start_time = urldecode($args['start_time']);
 		$end_time = urldecode($args['end_time']);
-
-		try {
-			$start_time = new DateTime($start_time);
-		} catch (Exception $e) {
-			if($e->getCode() === 0) {
-				throw new IncorrectTypeException($start_time, 'DateTime format');
-			}
-		}
-
-		try {
-			$end_time = new DateTime($end_time);
-		} catch (Exception $e) {
-			if($e->getCode() === 0) {
-				throw new IncorrectTypeException($end_time, 'DateTime format');
-			}
-		}
+		
+		$start_time = Helper::getDateTimeObject($start_time);
+		$end_time = Helper::getDateTimeObject($end_time);
 
 		$posts = Post::getAllWithinRange($start_time, $end_time);
 		$result = [
@@ -96,18 +83,8 @@ class PostController {
 		if(!$author) {
 			throw new ItemNotFoundException("user", "id: ".$body['author_id']);
 		}
-
-		$posted_time = $body['posted_time'];
-
-		try {
-			$posted_time = new DateTime($posted_time);
-		} catch (Exception $e) {
-			if($e->getCode() === 0) {
-				throw new IncorrectTypeException($posted_time, 'DateTime format');
-			}
-		}
-
-		$body['posted_time'] = $posted_time;
+		
+		$body['posted_time'] = Helper::getDateTimeObject($body['posted_time']);
 
 		$post = Post::create($body);
 

@@ -50,10 +50,10 @@ $errorMiddleware = $app->addErrorMiddleware(DISPLAY_ERRORS, false, false);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
 $directoriesToIncludeInSrc = [
+	"helper",
     "views",
     "controllers",
-    "models",
-    "helper"
+    "models"
 ];
 foreach ($directoriesToIncludeInSrc as $directory) {
     $files = scandir("../src/$directory");

@@ -6,6 +6,7 @@ const DB_NAME = "";
 const DB_USERNAME = "";
 const DB_PASSWORD = "";
 const DB_DATE_FORMAT = "Y-m-d";
+const DB_TIME_FORMAT = "H:i:s";
 const DB_DATETIME_FORMAT = "Y-m-d H:i:s";
 
 const SESSION_LENGTH_IN_MINUTES = 60 * 24; //24 hours

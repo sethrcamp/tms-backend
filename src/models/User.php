@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__."/../helper/Enum.php";
-
 abstract class UserType extends Enum {
 	const SUPER_ADMIN = "SUPER_ADMIN";
 	const ADMIN = "ADMIN";
