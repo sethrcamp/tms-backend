@@ -1,0 +1,19 @@
+<?php
+
+const DB_HOST = "";
+const DB_PORT = "";
+const DB_NAME = "";
+const DB_USERNAME = "";
+const DB_PASSWORD = "";
+
+const SESSION_LENGTH_IN_MINUTES = 60 * 24; //24 hours
+const MAX_SESSION_EXTENSIONS = 7;
+const MAX_SESSION_EXTENSION_LENGTH_IN_MINUTES = 60 * 24 * 7;
+
+const DISPLAY_ERRORS = false;
+
+const UNIT_TEST_BASE_URL = "";
+
+const REQUIRE_VALIDATION = true;  //determines whether endpoints are protected by validation
+const DEVELOPMENT_USER_ID = null; //used to login as user without the need for credentials
+const AUTOMATICALLY_REGENERATE_SESSIONS = false;
