@@ -5,7 +5,6 @@ use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
 class UserController {
-
 	public static function getAll(Request $request, Response $response, array $args) {
 		$users = User::getAll();
 		$result = [
