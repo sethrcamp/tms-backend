@@ -4,11 +4,11 @@ class Lesson {
 	public $id;
 	public $student_id;
 	public $instructor_id;
-	public $DAY_OF_WEEK;
-	public $start_time;
-	public $end_time;
-	public $email;
-	private $time_increment;
+	public $package_id;
+	public $credit_has_been_applied;
+	public $homework_notes_student;
+	public $homework_notes_parent;
+	public $timeslot_id;
 
 
 	public static function getAll() : array {
@@ -17,7 +17,7 @@ class Lesson {
 		$db = Database::getInstance();
 		$query = $db->prepare($sql);
 		$query->execute();
-		$result = $query->fetchAll(PDO::FETCH_CLASS, 'Lesson');
+		$result = $query->fetchAll(PDO::FETCH_CLASS, Lesson::class);
 		$query->closeCursor();
 
 		return $result;
@@ -29,7 +29,7 @@ class Lesson {
 		$db = Database::getInstance();
 		$query = $db->prepare($sql);
 		$query->execute([$instructor_id]);
-		$result = $query->fetchAll(PDO::FETCH_CLASS, 'Lesson');
+		$result = $query->fetchAll(PDO::FETCH_CLASS, Lesson::class);
 		$query->closeCursor();
 
 		return $result;
@@ -41,7 +41,7 @@ class Lesson {
 		$db = Database::getInstance();
 		$query = $db->prepare($sql);
 		$query->execute([$student_id]);
-		$result = $query->fetchAll(PDO::FETCH_CLASS, 'Lesson');
+		$result = $query->fetchAll(PDO::FETCH_CLASS, Lesson::class);
 		$query->closeCursor();
 
 		return $result;
@@ -53,19 +53,19 @@ class Lesson {
 		$db = Database::getInstance();
 		$query = $db->prepare($sql);
 		$query->execute([$package_id]);
-		$result = $query->fetchAll(PDO::FETCH_CLASS, 'Lesson');
+		$result = $query->fetchAll(PDO::FETCH_CLASS, Lesson::class);
 		$query->closeCursor();
 
 		return $result;
 	}
 
-	public static function getById(int $id) : ?User {
+	public static function getById(int $id) : ?Lesson {
 		$sql = "SELECT * FROM lessons WHERE id = ?";
 
 		$db = Database::getInstance();
 		$query = $db->prepare($sql);
 		$query->execute([$id]);
-		$result = $query->fetchAll(PDO::FETCH_CLASS, 'Lesson');
+		$result = $query->fetchAll(PDO::FETCH_CLASS, Lesson::class);
 		$query->closeCursor();
 
 		if(sizeof($result) === 0) {
@@ -146,23 +146,17 @@ class Lesson {
 	public static function create($data) {
 		$sql = "
             INSERT INTO lessons (
-			    student_id,
-				instructor_id,
-				DAY_OF_WEEK,
-				start_time,
-				end_time,
-				email,
-				time_increment
-            ) VALUES (?,?,?,?,?,?,?)
+			    student_id, 
+				instructor_id, 
+				package_id, 
+			    timeslot_id
+            ) VALUES (?,?,?,?)
         ";
 		$args = [
 			$data["student_id"],
 			$data['instructor_id'],
-			$data['DAY_OF_WEEK'],
-			$data['start_time'],
-			$data['end_time'],
-			$data['email'],
-			$data['time_increment'],
+			$data['package_id'],
+			$data['timeslot_id']
 		];
 
 		$db = Database::getInstance();

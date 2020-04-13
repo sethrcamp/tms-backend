@@ -78,9 +78,12 @@ class AvailabilityController {
 		}
 
 		$availability = Availability::create($body);
+		
+		$timeslots = $availability->generateNewTimeslots();
 
 		$result = [
-			"availability" => $availability
+			"availability" => $availability,
+			"timeslots" => $timeslots
 		];
 
 		$response = new JsonResponse($response);
@@ -121,12 +124,15 @@ class AvailabilityController {
 			AvailabilityController::checkForOverlappingAvailabilities($start_time, $end_time, $body['day'] ?? $availability->day, $availability->instructor_id, $body['term_id'] ?? $availability->term_id, $availability->id);
 		}
 
+		$do_timeslot_generation = false;
 		if(isset($body['start_time']) || isset($body['end_time']) || isset($body['time_increment'])) {
 			$time_increment = (int) ($body['time_increment'] ?? $availability->time_increment);
 
 			if((($end_time->getTimestamp() - $start_time->getTimestamp()) / 60) % $time_increment !== 0) {
 				throw new InvalidParameterException("time_increment" , "the time_increment must evenly divide the total availability time");
 			}
+
+			$do_timeslot_generation = true;
 		}
 
 		$body['start_time'] = $start_time;
@@ -134,8 +140,15 @@ class AvailabilityController {
 
 		$updated_availability = $availability->update($body);
 
+		$timeslots = $updated_availability->getTimeslots();
+
+		if($do_timeslot_generation) {
+			$timeslots = $updated_availability->generateNewTimeslots();
+		}
+
 		$result = [
-			"availability" => $updated_availability
+			"availability" => $updated_availability,
+			"timeslots" => $timeslots
 		];
 
 		$response = new JsonResponse($response);

@@ -57,6 +57,18 @@ class TermController {
 		return $response->withJson($result);
 	}
 
+	public static function getAllOpen(Request $request, Response $response, array $args) {
+		
+		$terms = Term::getAllOpen();
+
+		$result = [
+			"terms" => $terms
+		];
+
+		$response = new JsonResponse($response);
+		return $response->withJson($result);
+	}
+
 	public static function create(Request $request, Response $response, array $args) {
 		$body = $request->getParsedBody();
 

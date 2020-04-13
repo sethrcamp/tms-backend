@@ -64,6 +64,18 @@ class Term {
 		return $result[0];
 	}
 
+	public static function getAllOpen() : array {
+		$sql = "SELECT * FROM terms WHERE end_date >= CURRENT_DATE";
+
+		$db = Database::getInstance();
+		$query = $db->prepare($sql);
+		$query->execute();
+		$results = $query->fetchAll(PDO::FETCH_CLASS, Term::class);
+		$query->closeCursor();
+
+		return $results;
+	}
+
 	public static function getAllWithinRange(DateTime $start_date, DateTime $end_date, ?int $ignore_id = null) : array {
 		$sql = "
 			SELECT * FROM terms 

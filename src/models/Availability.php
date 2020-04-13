@@ -155,4 +155,36 @@ class Availability {
 		$query->closeCursor();
 	}
 
+	public function getTimeslots() {
+		return Timeslot::getAllByAvailabilityId($this->id);
+	}
+
+	public function generateNewTimeslots() {
+		$original_timeslots = $this->getTimeslots();
+		foreach($original_timeslots as $timeslot) {
+			$timeslot->delete();
+		}
+
+		$timeslots = [];
+
+		$start_time = new DateTime($this->start_time);
+		$end_time = new DateTime($this->end_time);
+
+		do {
+			$timeslot_start_time = $timeslot_end_time ?? $start_time;
+			$timeslot_end_time = (clone $timeslot_start_time)->add(new DateInterval("PT".$this->time_increment."M"));
+
+			$data = [
+				"start_time" => $timeslot_start_time,
+				"end_time" => $timeslot_end_time,
+				"availability" => $this->id
+			];
+
+			$timeslots[] = Timeslot::create($data);
+
+		} while($timeslot_end_time < $end_time);
+
+		return $timeslots;
+	}
+
 }
