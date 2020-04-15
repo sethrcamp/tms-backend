@@ -19,6 +19,29 @@ class Term {
 		return $result;
 	}
 
+	public static function getByTimeslotId(int $timeslot_id) : array {
+		$sql = "
+			SELECT terms.* 
+			FROM terms
+			JOIN availabilities 
+			    ON terms.id = availabilities.term_id
+			JOIN timeslots
+				ON availabilities.id = timeslots.availability_id
+			WHERE timeslots.id = ?
+		";
+
+		$db = Database::getInstance();
+		$query = $db->prepare($sql);
+		$query->execute([$timeslot_id]);
+		$result = $query->fetchAll(PDO::FETCH_CLASS, Term::class);
+		$query->closeCursor();
+
+		if(sizeof($result) === 0) {
+			return null;
+		}
+		return $result[0];
+	}
+
 	public static function getById(int $id) : ?Term {
 		$sql = "SELECT * FROM terms WHERE id = ?";
 

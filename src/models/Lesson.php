@@ -9,6 +9,7 @@ class Lesson {
 	public $homework_notes_student;
 	public $homework_notes_parent;
 	public $timeslot_id;
+	public $date;
 
 
 	public static function getAll() : array {
@@ -149,14 +150,16 @@ class Lesson {
 			    student_id, 
 				instructor_id, 
 				package_id, 
-			    timeslot_id
-            ) VALUES (?,?,?,?)
+			    timeslot_id,
+				date
+            ) VALUES (?,?,?,?,?)
         ";
 		$args = [
 			$data["student_id"],
 			$data['instructor_id'],
 			$data['package_id'],
-			$data['timeslot_id']
+			$data['timeslot_id'],
+			$data['date']
 		];
 
 		$db = Database::getInstance();
