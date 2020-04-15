@@ -36,7 +36,7 @@ class Timeslot {
 	
 	public static function getAllOpenByTermId(int $term_id) : array {
 		$sql = "
-			SELECT timeslots_open.*, availabilities.day, CONCAT(users.first_name, ' ', users.last_name) as instructor_name 
+			SELECT timeslots_open.*, availabilities.day, CONCAT(users.first_name, ' ', users.last_name) as instructor_name, availabilities.instructor_id 
 			FROM timeslots_open
 			JOIN availabilities 
 			    ON timeslots_open.availability_id = availabilities.id
