@@ -52,6 +52,24 @@ class Availability {
 		return $result[0];
 	}
 
+	public static function getAllOpenByTermId(int $id) : array {
+		$sql = "
+			SELECT availabilities.id, COUNT(*) as total_timeslots_available
+			FROM availabilities 
+			JOIN timeslots
+				ON availabilities.id = timeslots.availability_id
+			GROUP BY timeslots.availability_id
+		";
+
+		$db = Database::getInstance();
+		$query = $db->prepare($sql);
+		$query->execute([$id]);
+		$result = $query->fetchAll(PDO::FETCH_CLASS, Availability::class);
+		$query->closeCursor();
+
+		return $result;
+	}
+
 	public static function getAllWithinRange(DateTime $start_date, DateTime $end_date, string $day, int $instructor_id, int $term_id, ?int $ignore_id = null) : array {
 		$sql = "
 			SELECT * FROM availabilities 

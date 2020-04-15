@@ -29,6 +29,39 @@ class AvailabilityController {
 		$response = new JsonResponse($response);
 		return $response->withJson($result);
 	}
+	
+	public static function getAllOpenTimeslotsByTermId(Request $request, Response $response, array $args) {
+		$term = Term::getById($args['term_id']);
+
+		if(!$term) {
+			throw new ItemNotFoundException("term", "id: ".$args['term_id']);
+		}
+		
+		$timeslots = Timeslot::getAllOpenByTermId($term->id);
+		
+		$days = [];
+		
+		foreach($timeslots as $timeslot) {
+			$day = $timeslot['day'];
+			unset($timeslot['day']);
+			
+			if(!isset($days[$day])) {
+				$days[$day] = [
+					"day" => $day,
+					"open_slots" => []
+				];
+			}
+
+			$days[$day]["open_slots"][] = $timeslot;
+		}
+
+		$result = [
+			"days" => array_values($days)
+		];
+
+		$response = new JsonResponse($response);
+		return $response->withJson($result);
+	}
 
 	public static function create(Request $request, Response $response, array $args) {
 		$body = $request->getParsedBody();

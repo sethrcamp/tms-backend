@@ -33,6 +33,25 @@ class Timeslot {
 		
 		return $result;
 	}
+	
+	public static function getAllOpenByTermId(int $term_id) : array {
+		$sql = "
+			SELECT timeslots_open.*, availabilities.day, CONCAT(users.first_name, ' ', users.last_name) as instructor_name 
+			FROM timeslots_open
+			JOIN availabilities 
+			    ON timeslots_open.availability_id = availabilities.id
+			JOIN users ON availabilities.instructor_id = users.id
+			WHERE availabilities.term_id = ?
+		";
+
+		$db = Database::getInstance();
+		$query = $db->prepare($sql);
+		$query->execute([$term_id]);
+		$result = $query->fetchAll(PDO::FETCH_ASSOC);
+		$query->closeCursor();
+
+		return $result;
+	}
 
 	public static function create($data) : Timeslot {
 		$sql = "
