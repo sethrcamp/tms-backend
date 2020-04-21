@@ -156,7 +156,7 @@ class UserController {
 
 		$html_body = "<p>A request to reset the password for twiggmusicstudio.com was received this for this email address. ".
 			"If you did not make this request, you may ignore this email. ".
-			"Click <a href='http://".RESET_PASSWORD_REDIRECT_URL.$reset_password_email->id."'>here</a> to reset your password.</p>"
+			"Click <a href=".RESET_PASSWORD_REDIRECT_URL.$reset_password_email->id.">here</a> to reset your password.</p>"
 		;
 
 		$email = new Email(
