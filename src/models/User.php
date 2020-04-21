@@ -82,7 +82,7 @@ class User {
 
 	public static function getByResetPasswordEmailId(string $id) : ?User {
 		$sql = "
-			SELECT * 
+			SELECT users.* 
 			FROM users 
 			JOIN reset_password_emails 
 			    ON users.id = reset_password_emails.user_id 
