@@ -24,7 +24,8 @@
         "ext-pdo": "*",
         "ext-json": "*",
       "ext-curl": "*",
-      "ext-openssl": "*"
+      "ext-openssl": "*",
+        "aws/aws-sdk-php": "^3.135"
     },
     "require-dev": {
         "phpunit/phpunit": "^8"

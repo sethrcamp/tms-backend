@@ -80,6 +80,27 @@ class User {
 		return $result;
 	}
 
+	public static function getByResetPasswordEmailId(string $id) : ?User {
+		$sql = "
+			SELECT * 
+			FROM users 
+			JOIN reset_password_emails 
+			    ON users.id = reset_password_emails.user_id 
+			WHERE reset_password_emails.id = ?
+		";
+
+		$db = Database::getInstance();
+		$query = $db->prepare($sql);
+		$query->execute([$id]);
+		$result = $query->fetchAll(PDO::FETCH_CLASS, User::class);
+		$query->closeCursor();
+
+		if(sizeof($result) === 0) {
+			return null;
+		}
+		return $result[0];
+	}
+
 	public static function getAllByAgeClassification(string $age_classification) : array {
 		$sql = "SELECT * FROM users WHERE age_classification = ?";
 

@@ -46,6 +46,21 @@ class UserController {
 		$response = new JsonResponse($response);
 		return $response->withJson($result);
 	}
+	
+	public static function getByResetPasswordEmailId(Request $request, Response $response, array $args) {
+		$user = User::getByResetPasswordEmailId($args['id']);
+
+		if(!$user) {
+			throw new ItemNotFoundException("user", "reset_password_email_id: ".$args['id']);
+		}
+
+		$result = [
+			"user" => $user
+		];
+
+		$response = new JsonResponse($response);
+		return $response->withJson($result);
+	}
 
 	public static function getAllByAgeClassification(Request $request, Response $response, array $args) {
 
@@ -112,6 +127,49 @@ class UserController {
 
 		$response = new JsonResponse($response);
 		return $response->withJson($result);
+	}
+
+	public static function sendResetPasswordEmail(Request $request, Response $response, array $args) {
+		$body = $request->getParsedBody();
+
+		$required_parameters = [
+			'email'
+		];
+
+		Helper::checkForAllParameters($body, $required_parameters);
+
+		$user_with_email = User::getByEmail($body['email']);
+
+		if(!$user_with_email) {
+			throw new ItemNotFoundException("user", "email: ".$body['email']);
+		}
+
+		$reset_password_email = ResetPasswordEmail::create([
+			"id" => Helper::generateToken(),
+			"user_id" => $user_with_email->id
+		]);
+
+		$html_body =  '<h1>AWS Amazon Simple Email Service Test Email</h1>'.
+			'<p>This email was sent with <a href="https://aws.amazon.com/ses/">'.
+			'Amazon SES</a> using the <a href="https://aws.amazon.com/sdk-for-php/">'.
+			'AWS SDK for PHP</a>.</p>';
+
+		$html_body = "<p>A request to reset the password for twiggmusicstudio.com was received this for this email address. ".
+			"If you did not make this request, you may ignore this email. ".
+			"Click <a href='http://".RESET_PASSWORD_REDIRECT_URL.$reset_password_email->id."'>here</a> to reset your password.</p>"
+		;
+
+		$email = new Email(
+			DEFAULT_SENDER_EMAIL,
+			$user_with_email->email,
+			"Don't worry! We all forget sometimes!",
+			$html_body
+			);
+
+		$email->sendMessage();
+
+		$response = new JsonResponse($response);
+		return $response->withJson(["status" => 200, "message" => "success"]);
 	}
 
 	public static function login(Request $request, Response $response, array $args) {
@@ -223,6 +281,45 @@ class UserController {
 
 		$response = new JsonResponse($response);
 		return $response->withJson($result);
+	}
+	
+	public static function resetPassword(Request $request, Response $response, array $args) {
+		$user = User::getById($args['id']);
+
+		if(!$user) {
+			throw new ItemNotFoundException("user", "id: ".$args['id']);
+		}
+
+		$body = $request->getParsedBody();
+
+		$required_parameters = [
+			"reset_password_email_id",
+			"password"
+		];
+
+		Helper::checkForAllParameters($body, $required_parameters);
+		
+		$reset_password_email = ResetPasswordEmail::getById($body['reset_password_email_id']);
+
+		if(!$reset_password_email) {
+			throw new ItemNotFoundException("reset_password_email", "id: ".$body['reset_password_email_id']);
+		}
+		
+		if($user->id !== $reset_password_email->user_id) {
+			throw new InvalidParameterException("reset_password_email_id", "there is no reset_password_email for a user with id: ".$args['id']);
+		}
+
+		$body['password'] = password_hash($body['password'], PASSWORD_BCRYPT);
+
+		$updated_user = $user->update($body);
+
+		$result = [
+			"user" => $updated_user
+		];
+
+		$response = new JsonResponse($response);
+		return $response->withJson($result);
+		
 	}
 
 	public static function delete(Request $request, Response $response, array $args) {
