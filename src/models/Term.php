@@ -6,6 +6,7 @@ class Term {
 	public $start_date;
 	public $end_date;
 	public $name;
+	public $is_private;
 
 	public static function getAll() : array {
 		$sql = "SELECT * FROM terms ORDER BY start_date";
@@ -88,7 +89,7 @@ class Term {
 	}
 
 	public static function getAllOpen() : array {
-		$sql = "SELECT * FROM terms WHERE end_date >= CURRENT_DATE";
+		$sql = "SELECT * FROM terms WHERE end_date >= CURRENT_DATE AND is_private = 0";
 
 		$db = Database::getInstance();
 		$query = $db->prepare($sql);
@@ -147,7 +148,8 @@ class Term {
             SET 
                 start_date = ?,
                 end_date = ?,
-                name = ?
+                name = ?,
+                is_private = ?
             WHERE 
                 id = ?
         ";
@@ -157,6 +159,7 @@ class Term {
 			($data['start_date'] ?? $this->start_date)->format(DB_DATE_FORMAT),
 			($data['end_date'] ?? $this->end_date)->format(DB_DATE_FORMAT),
 			$data['name'] ?? $this->name,
+			$data['is_private'] ?? $this->is_private,
 			$this->id
 		];
 

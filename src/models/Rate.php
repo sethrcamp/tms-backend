@@ -12,4 +12,5 @@ class Rate {
 	public $type;
 	public $timing;
 	public $service_id;
+	public $cost;
 }

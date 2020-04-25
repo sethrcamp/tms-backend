@@ -112,6 +112,18 @@ class User {
 
 		return $result;
 	}
+	
+	public static function getSuperAdmin() : User {
+		$sql = "SELECT * FROM users WHERE type = 'SUPER_ADMIN'";
+
+		$db = Database::getInstance();
+		$query = $db->prepare($sql);
+		$query->execute([$email]);
+		$result = $query->fetchAll(PDO::FETCH_CLASS, User::class);
+		$query->closeCursor();
+		
+		return $result[0];
+	}
 
 	public function getParent() : User { //for the future
 		return User::getById($this->parent_id);

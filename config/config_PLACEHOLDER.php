@@ -12,9 +12,9 @@ const DB_DATETIME_FORMAT = "Y-m-d H:i:s";
 const DEFAULT_SENDER_EMAIL = "";
 const RESET_PASSWORD_REDIRECT_URL = ""; //Must include http:// or https://
 
+const MAX_RESET_PASSWORD_EMAIL_LENGTH_IN_MINUTES = 60 * 24; //24 hours
 
 const SESSION_LENGTH_IN_MINUTES = 60 * 24; //24 hours
-const MAX_SESSION_EXTENSIONS = 7;
 const MAX_SESSION_EXTENSION_LENGTH_IN_MINUTES = 60 * 24 * 7;
 
 const DISPLAY_ERRORS = false;

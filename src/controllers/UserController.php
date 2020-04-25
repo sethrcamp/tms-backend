@@ -53,6 +53,13 @@ class UserController {
 		if(!$user) {
 			throw new ItemNotFoundException("user", "reset_password_email_id: ".$args['id']);
 		}
+		
+		$reset_password_email = ResetPasswordEmail::getByUserId($user->id);
+		
+		if($reset_password_email->hasExpired()) {
+			$reset_password_email->delete();
+			throw new ResetPasswordEmailExpiredException($reset_password_email->id);
+		}
 
 		$result = [
 			"user" => $user
@@ -144,20 +151,23 @@ class UserController {
 			throw new ItemNotFoundException("user", "email: ".$body['email']);
 		}
 
-		$reset_password_email = ResetPasswordEmail::create([
-			"id" => Helper::generateToken(),
-			"user_id" => $user_with_email->id
-		]);
+		$reset_password_email = ResetPasswordEmail::getByUserId($user_with_email->id);
 
-		$html_body =  '<h1>AWS Amazon Simple Email Service Test Email</h1>'.
-			'<p>This email was sent with <a href="https://aws.amazon.com/ses/">'.
-			'Amazon SES</a> using the <a href="https://aws.amazon.com/sdk-for-php/">'.
-			'AWS SDK for PHP</a>.</p>';
+		if($reset_password_email !== null && $reset_password_email->hasExpired()) {
+			$reset_password_email->delete();
+			$reset_password_email = null;
+		}
+
+		if($reset_password_email === null) {
+			$reset_password_email = ResetPasswordEmail::create([
+				"id" => Helper::generateToken(),
+				"user_id" => $user_with_email->id
+			]);
+		}
 
 		$html_body = "<p>A request to reset the password for twiggmusicstudio.com was received this for this email address. ".
 			"If you did not make this request, you may ignore this email. ".
-			"Click <a href='http://".RESET_PASSWORD_REDIRECT_URL.$reset_password_email->id."'>here</a> to reset your password.</p>"
-		;
+			"Click <a href='http://".RESET_PASSWORD_REDIRECT_URL.$reset_password_email->id."'>here</a> to reset your password.</p>";
 
 		$email = new Email(
 			DEFAULT_SENDER_EMAIL,
@@ -303,6 +313,10 @@ class UserController {
 
 		if(!$reset_password_email) {
 			throw new ItemNotFoundException("reset_password_email", "id: ".$body['reset_password_email_id']);
+		}
+		
+		if($reset_password_email->hasExpired()) {
+			throw new ResetPasswordEmailExpiredException($reset_password_email->id);
 		}
 		
 		if($user->id !== $reset_password_email->user_id) {

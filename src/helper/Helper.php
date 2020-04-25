@@ -22,6 +22,13 @@ class Helper {
 		$response = $response->withAddedHeader("Set-Cookie", "session_id=".$session->id."; Expires=".$expiration_date."; Path=/; SameSite=Strict; httpOnly");
 		return $response;
 	}
+	
+	public static function isDouble(float $float) : bool {
+		$float = (string) $float;
+		$exploded = explode(".", $float);
+		$decimal_count = strlen($exploded[1]);
+		return $decimal_count <= 2;
+	}
 
 	public static function getDateObject(string $date) : DateTime {
 		return Helper::getFormattedDateTimeObject($date, DB_DATE_FORMAT);
