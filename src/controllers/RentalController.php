@@ -30,6 +30,42 @@ class RentalController {
 		return $response->withJson($result);
 	}
 
+	public static function getByAllRateId(Request $request, Response $response, array $args) {
+
+		$rate = Rate::getById($args['rate_id']);
+
+		if($rate === null) {
+			throw new ItemNotFoundException("rate", "id: ".$args['rate_id']);
+		}
+
+		$rentals = Rental::getAllByRateId($rate->id);
+
+		$result = [
+			"rentals" => $rentals
+		];
+
+		$response = new JsonResponse($response);
+		return $response->withJson($result);
+	}
+
+	public static function getByAllUserId(Request $request, Response $response, array $args) {
+
+		$user = Rate::getById($args['user_id']);
+
+		if($user === null) {
+			throw new ItemNotFoundException("user", "id: ".$args['user_id']);
+		}
+
+		$rentals = Rental::getAllByUserId($user->id);
+
+		$result = [
+			"rentals" => $rentals
+		];
+
+		$response = new JsonResponse($response);
+		return $response->withJson($result);
+	}
+
 	public static function create(Request $request, Response $response, array $args) {
 		$body = $request->getParsedBody();
 
@@ -43,6 +79,22 @@ class RentalController {
 
 		if($rental_with_name) {
 			throw new ItemAlreadyExistsException("rental", "name: ".$body['name']);
+		}
+
+		if(isset($body['rate_id'])) {
+			$rate = Rate::getById($body['rate_id']);
+
+			if($rate === null) {
+				throw new ItemNotFoundException("rate", "id: ".$body['rate_id']);
+			}
+		}
+
+		if(isset($body['user_id'])) {
+			$user = User::getById($body['user_id']);
+
+			if($user === null) {
+				throw new ItemNotFoundException("user", "id: ".$body['user_id']);
+			}
 		}
 
 		$rental = Rental::create($body);
@@ -69,6 +121,23 @@ class RentalController {
 
 			if($rental_with_name && $rental_with_name->id !== $rental->id) {
 				throw new ItemAlreadyExistsException("rental", "name: ".$body['name']);
+			}
+		}
+
+		if(isset($body['rate_id'])) {
+			$rate = rate::getById($body['rate_id']);
+
+			if($rate === null) {
+				throw new ItemNotFoundException("rate", "id: ".$body['rate_id']);
+			}
+
+		}
+
+		if(isset($body['user_id'])) {
+			$user = User::getById($body['user_id']);
+
+			if($user === null) {
+				throw new ItemNotFoundException("user", "id: ".$body['user_id']);
 			}
 		}
 

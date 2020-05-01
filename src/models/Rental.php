@@ -7,6 +7,8 @@ class Rental {
 	public $description;
 	public $physical_condition;
 	public $notes;
+	public $rate_id;
+	public $user_id;
 
 	public static function getAll() : array {
 		$sql = "SELECT * FROM rentals";
@@ -50,20 +52,49 @@ class Rental {
 		return $result[0];
 	}
 
+	public static function getAllByRateId(int $id) : array {
+		$sql = "SELECT * FROM rentals WHERE rate_id = ?";
+
+		$db = Database::getInstance();
+		$query = $db->prepare($sql);
+		$query->execute([$id]);
+		$result = $query->fetchAll(PDO::FETCH_CLASS, Rate::class);
+		$query->closeCursor();
+
+		return $result;
+	}
+
+	public static function getAllByUserId(int $id) : array {
+		$sql = "SELECT * FROM rentals WHERE user_id = ?";
+
+		$db = Database::getInstance();
+		$query = $db->prepare($sql);
+		$query->execute([$id]);
+		$result = $query->fetchAll(PDO::FETCH_CLASS, Rate::class);
+		$query->closeCursor();
+
+		return $result;
+	}
+
+
 	public static function create(array $data) : Rental {
 		$sql = "
             INSERT INTO rentals (
             	name, 
             	description, 
             	physical_condition, 
-            	notes
-			) VALUES (?,?,?,?)
+            	notes,
+			    rate_id,
+			    user_id
+			) VALUES (?,?,?,?,?)
         ";
 		$args = [
 			$data['name'],
 			$data['description'] ?? null,
 			$data['physical_condition'] ?? null,
-			$data['notes'] ?? null
+			$data['notes'] ?? null,
+			$data['rate_id'] ?? null,
+			$data['user_id'] ?? null
 		];
 
 		$db = Database::getInstance();
@@ -81,7 +112,9 @@ class Rental {
             	name = ?,
             	description = ?,
             	physical_condition = ?,
-            	notes = ?
+            	notes = ?,
+			    rate_id = ?,
+			    user_id = ?
             WHERE 
                 id = ?
         ";
@@ -92,6 +125,8 @@ class Rental {
 			$data['description'] ?? $this->description,
 			$data['physical_condition'] ?? $this->physical_condition,
 			$data['notes'] ?? $this->notes,
+			$data['rate_id'] ?? $this->rate_id,
+			$data['user_id'] ?? $this->user_id,
 			$this->id
 		];
 
