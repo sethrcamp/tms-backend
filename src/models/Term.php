@@ -37,10 +37,7 @@ class Term {
 		$result = $query->fetchAll(PDO::FETCH_CLASS, Term::class);
 		$query->closeCursor();
 
-		if(sizeof($result) === 0) {
-			return null;
-		}
-		return $result[0];
+		return $result;
 	}
 
 	public static function getById(int $id) : ?Term {
