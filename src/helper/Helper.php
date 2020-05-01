@@ -23,7 +23,10 @@ class Helper {
 		return $response;
 	}
 	
-	public static function isDouble(float $float) : bool {
+	public static function isDouble($float) : bool {
+		if(is_int($float)) return true;
+		if(!is_float($float)) return false;
+
 		$float = (string) $float;
 		$exploded = explode(".", $float);
 		$decimal_count = strlen($exploded[1]);
@@ -48,7 +51,7 @@ class Helper {
 			$date_time_formatted = new DateTime($date_time_formatted->format($DB_FORMAT));
 		} catch (Exception $e) {
 			if($e->getCode() === 0) {
-				throw new IncorrectTypeException($date_time, "DateTime format");
+				throw new InvalidTypeException($date_time, "DateTime format");
 			}
 		}
 

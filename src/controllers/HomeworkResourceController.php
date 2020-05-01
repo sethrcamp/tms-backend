@@ -47,7 +47,7 @@ class HomeworkResourceController {
 		}
 
 		if(!filter_var($body['url'], FILTER_VALIDATE_URL)) {
-			throw new IncorrectTypeException("url", "url");
+			throw new InvalidTypeException("url", "url");
 		}
 
 		$homework_resource = HomeworkResource::create($body);
@@ -89,7 +89,7 @@ class HomeworkResourceController {
 		Helper::checkForAllParameters($body, $required_parameters);
 
 		if(!filter_var($body['url'], FILTER_VALIDATE_URL)) {
-			throw new IncorrectTypeException("url", "url");
+			throw new InvalidTypeException("url", "url");
 		}
 
 		$updated_homework_resource = $homework_resource->update($body);

@@ -89,7 +89,7 @@ class AvailabilityController {
 		}
 
 		if(!DayOfWeek::isValidName($body['day'])) {
-			throw new IncorrectTypeException($body['day'], 'DayOfWeek');
+			throw new InvalidTypeException($body['day'], 'DayOfWeek');
 		}
 
 		$start_time = Helper::getTimeObject($body['start_time']);
@@ -141,7 +141,7 @@ class AvailabilityController {
 		}
 
 		if(isset($body['day']) && !DayOfWeek::isValidName($body['day'])) {
-			throw new IncorrectTypeException($body['day'], 'DayOfWeek');
+			throw new InvalidTypeException($body['day'], 'DayOfWeek');
 		}
 
 		$start_time = Helper::getTimeObject($body['start_time'] ?? $availability->start_time);

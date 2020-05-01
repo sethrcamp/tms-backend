@@ -43,7 +43,7 @@ class TransactionController {
 		Helper::checkForAllParameters($body, $required_parameters);
 
 		if(!TransactionType::isValidName($body['type'])) {
-			throw new IncorrectTypeException($body['type'], "TransactionType");
+			throw new InvalidTypeException($body['type'], "TransactionType");
 		}
 
 		if(isset($body['from_user_id'])) {
@@ -79,12 +79,12 @@ class TransactionController {
 			throw new InvalidParameterException("type", "the to_user for a CHARGE or CREDIT must be of type STUDENT");
 		}
 
-		if(!is_float($body['amount']) || !Helper::isDouble($body['amount'])) {//ensures the value is a valid PHP float, then checks if it has 0,1, or 2 decimal places
+		if(!Helper::isDouble($body['amount'])) {//ensures the value is a valid PHP float, then checks if it has 0,1, or 2 decimal places
 			throw new InvalidParameterException("amount", "amount must be a double.");
 		}
 
 		if(!TransactionType::isValidName($body['type'])) {
-			throw new IncorrectTypeException($body['type'], "TransactionType");
+			throw new InvalidTypeException($body['type'], "TransactionType");
 		}
 
 		if(isset($body['lesson_id']) && isset($body['rental_id'])) {

@@ -52,7 +52,7 @@ class TMSResourceController {
 		$type = $args['type'];
 
 		if(!TMSResourceType::isValidName($type)) {
-			throw new IncorrectTypeException($type, 'TMSResourceType');
+			throw new InvalidTypeException($type, 'TMSResourceType');
 		}
 
 		$resources = TMSResource::getAllByType($type);
@@ -75,7 +75,7 @@ class TMSResourceController {
 		Helper::checkForAllParameters($body, $required_parameters);
 
 		if(!TMSResourceType::isValidName($body['type'])) {
-			throw new IncorrectTypeException($body['type'], 'TMSResourceType');
+			throw new InvalidTypeException($body['type'], 'TMSResourceType');
 		}
 
 		if(isset($body['user_id'])) {
@@ -114,7 +114,7 @@ class TMSResourceController {
 		}
 
 		if(isset($body['type']) && !TMSResourceType::isValidName($body['type'])) {
-			throw new IncorrectTypeException($body['type'], 'TMSResourceType');
+			throw new InvalidTypeException($body['type'], 'TMSResourceType');
 		}
 
 		$updated_resource = $resource->update($body);

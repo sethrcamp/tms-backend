@@ -11,7 +11,7 @@ class Validator {
 	public function __construct($types = []) {
 		foreach($types as $type) {
 			if(!UserType::isValidName($type)) {
-				throw new IncorrectTypeException($type, "UserType");
+				throw new InvalidTypeException($type, "UserType");
 			}
 		}
 		$this->accepted_types = $types;

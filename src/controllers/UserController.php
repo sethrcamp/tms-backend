@@ -35,7 +35,7 @@ class UserController {
 		$type = $args['type'];
 
 		if(!UserType::isValidName($type)) {
-			throw new IncorrectTypeException($type, 'UserType');
+			throw new InvalidTypeException($type, 'UserType');
 		}
 
 		$users = User::getAllByType($type);
@@ -74,7 +74,7 @@ class UserController {
 		$age_classification = $args['age_classification'];
 
 		if(!UserAgeClassification::isValidName($age_classification)) {
-			throw new IncorrectTypeException($age_classification, 'UserAgeClassification');
+			throw new InvalidTypeException($age_classification, 'UserAgeClassification');
 		}
 
 		$users = User::getAllByAgeClassification($age_classification);
@@ -108,7 +108,7 @@ class UserController {
 		}
 
 		if(!UserAgeClassification::isValidName($body['age_classification'])) {
-			throw new IncorrectTypeException($body['age_classification'], 'UserAgeClassification');
+			throw new InvalidTypeException($body['age_classification'], 'UserAgeClassification');
 		}
 
 		if(isset($body['parent_id'])) {
@@ -120,7 +120,7 @@ class UserController {
 		}
 
 		if(isset($body['type']) && !UserType::isValidName($body['type'])) {
-			throw new IncorrectTypeException($body['type'], 'UserType');
+			throw new InvalidTypeException($body['type'], 'UserType');
 		}
 
 		$body['password'] = password_hash($body['password'], PASSWORD_BCRYPT);
@@ -268,11 +268,11 @@ class UserController {
 		}
 
 		if(isset($body['type']) && !UserType::isValidName($body['type'])) {
-			throw new IncorrectTypeException($body['type'], 'UserType');
+			throw new InvalidTypeException($body['type'], 'UserType');
 		}
 
 		if(isset($body['age_classification']) && !UserAgeClassification::isValidName($body['age_classification'])) {
-			throw new IncorrectTypeException($body['age_classification'], 'UserAgeClassification');
+			throw new InvalidTypeException($body['age_classification'], 'UserAgeClassification');
 		}
 
 		if(isset($body['password'])) {
@@ -280,7 +280,7 @@ class UserController {
 		}
 
 		if(isset($body['credit']) && !is_double($body['credit'])) {
-			throw new IncorrectTypeException($body['credit'], 'double');
+			throw new InvalidTypeException($body['credit'], 'double');
 		}
 
 		$updated_user = $user->update($body);

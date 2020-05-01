@@ -38,7 +38,7 @@ class TermController {
 			$date = new DateTime($date);
 		} catch (Exception $e) {
 			if($e->getCode() === 0) {
-				throw new IncorrectTypeException($args['date'], "DateTime format");
+				throw new InvalidTypeException($args['date'], "DateTime format");
 			}
 		}
 
